@@ -23,6 +23,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class HomeFragment extends Fragment {
 
@@ -66,9 +67,9 @@ public class HomeFragment extends Fragment {
 
 
     }
-    private void getMusicData() {
-        final ProgressDialog progressDialog = new ProgressDialog(getContext());
-        
+    private void getHomeData() {
+
+
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
@@ -94,11 +95,11 @@ public class HomeFragment extends Fragment {
                     } catch (JSONException e) {
                         Log.e("Json Exception : ", e.getMessage());
                         e.printStackTrace();
-                        progressDialog.dismiss();
+
                     }
                 }
                 adapter.notifyDataSetChanged();
-                progressDialog.dismiss();
+
             }
         }, new Response.ErrorListener() {
             @Override
@@ -109,8 +110,6 @@ public class HomeFragment extends Fragment {
                     //e.printStackTrace();
                 }
                 Log.e("Volley Error : ", error.toString());
-                progressDialog.dismiss();
-
 
 
             }
@@ -137,27 +136,30 @@ public class HomeFragment extends Fragment {
         // Setup any handles to view objects here
         // EditText etFoo = (EditText) view.findViewById(R.id.etFoo);
 
-        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
-
-       albumList = new ArrayList<>();
-        adapter = new AlbumsAdapter(getContext(), albumList);
-
-        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getContext(), 1);
-        recyclerView.setLayoutManager(mLayoutManager);
-        // recyclerView.addItemDecoration(new MainActivity.GridSpacingItemDecoration(2, dpToPx(10), true));
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(adapter);
         try {
-         getofflineMusicData();
-        } catch (JSONException e) {
+            recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
 
-            Log.e("JsonException : ", e.getMessage());
-        }
+            albumList = new ArrayList<>();
+            adapter = new AlbumsAdapter(getContext(), albumList);
 
-        getMusicData();
+            RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getContext(), 1);
+            recyclerView.setLayoutManager(mLayoutManager);
+            // recyclerView.addItemDecoration(new MainActivity.GridSpacingItemDecoration(2, dpToPx(10), true));
+            recyclerView.setItemAnimator(new DefaultItemAnimator());
+            recyclerView.setAdapter(adapter);
+            try {
+                getofflineMusicData();
+            } catch (JSONException e) {
+
+                Log.e("JsonException : ", e.getMessage());
+            }
+
+            getHomeData();
 //_______________________________________________________________
 
-
+        }catch (Exception ex){
+            Log.e("Exception :",ex.getMessage());
+        }
     }
 
 }

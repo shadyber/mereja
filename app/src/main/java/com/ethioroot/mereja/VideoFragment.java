@@ -88,7 +88,6 @@ public class  VideoFragment extends Fragment {
 
     }
     private void getDramaData() {
-        final ProgressDialog progressDialog = new ProgressDialog(getContext());
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(urldrama, new Response.Listener<JSONArray>() {
             @Override
@@ -115,11 +114,11 @@ public class  VideoFragment extends Fragment {
                     } catch (JSONException e) {
                         Log.e("Json Exception : ", e.getMessage());
                         e.printStackTrace();
-                        progressDialog.dismiss();
+
                     }
                 }
                 dramaAdapter.notifyDataSetChanged();
-                progressDialog.dismiss();
+
             }
         }, new Response.ErrorListener() {
             @Override
@@ -130,7 +129,6 @@ public class  VideoFragment extends Fragment {
                     //e.printStackTrace();
                 }
                 Log.e("Volley Error : ", error.toString());
-                progressDialog.dismiss();
 
 
 
@@ -177,8 +175,6 @@ public class  VideoFragment extends Fragment {
     }
     private void getMusicData() {
         final ProgressDialog progressDialog = new ProgressDialog(getContext());
-        progressDialog.setMessage("Loading...");
-        progressDialog.show();
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
             @Override
@@ -205,11 +201,11 @@ public class  VideoFragment extends Fragment {
                     } catch (JSONException e) {
                         Log.e("Json Exception : ", e.getMessage());
                         e.printStackTrace();
-                        progressDialog.dismiss();
+
                     }
                 }
                 adapter.notifyDataSetChanged();
-                progressDialog.dismiss();
+
             }
         }, new Response.ErrorListener() {
             @Override
@@ -220,7 +216,6 @@ public class  VideoFragment extends Fragment {
                     //e.printStackTrace();
                 }
                 Log.e("Volley Error : ", error.toString());
-                progressDialog.dismiss();
 
 
 
@@ -294,11 +289,11 @@ public class  VideoFragment extends Fragment {
                     } catch (JSONException e) {
                         Log.e("Json Exception : ", e.getMessage());
                         e.printStackTrace();
-                        progressDialog.dismiss();
+
                     }
                 }
                 dramaAdapter.notifyDataSetChanged();
-                progressDialog.dismiss();
+
             }
         }, new Response.ErrorListener() {
             @Override
@@ -309,7 +304,7 @@ public class  VideoFragment extends Fragment {
                     //e.printStackTrace();
                 }
                 Log.e("Volley Error : ", error.toString());
-                progressDialog.dismiss();
+
 
 
 
@@ -381,11 +376,11 @@ public class  VideoFragment extends Fragment {
                     } catch (JSONException e) {
                         Log.e("Json Exception : ", e.getMessage());
                         e.printStackTrace();
-                        progressDialog.dismiss();
+
                     }
                 }
                 tvAdapter.notifyDataSetChanged();
-                progressDialog.dismiss();
+
             }
         }, new Response.ErrorListener() {
             @Override
@@ -396,7 +391,7 @@ public class  VideoFragment extends Fragment {
                     //e.printStackTrace();
                 }
                 Log.e("Volley Error : ", error.toString());
-                progressDialog.dismiss();
+
 
 
 
@@ -468,11 +463,11 @@ public class  VideoFragment extends Fragment {
                     } catch (JSONException e) {
                         Log.e("Json Exception : ", e.getMessage());
                         e.printStackTrace();
-                        progressDialog.dismiss();
+
                     }
                 }
                 miscAdapter.notifyDataSetChanged();
-                progressDialog.dismiss();
+
             }
         }, new Response.ErrorListener() {
             @Override
@@ -483,7 +478,7 @@ public class  VideoFragment extends Fragment {
                     //e.printStackTrace();
                 }
                 Log.e("Volley Error : ", error.toString());
-                progressDialog.dismiss();
+
 
 
 
@@ -497,8 +492,15 @@ public class  VideoFragment extends Fragment {
 //---------------------Music Recicle View
 
     private void getofflineliveData() throws JSONException {
-        FileManager fileManager = new FileManager();
-        String stringfile = fileManager.readFromFile("live.dat", getContext());
+        String stringfile ="";
+        try {
+           FileManager fileManager = new FileManager();
+          stringfile = fileManager.readFromFile("live.dat", getContext());
+       }catch (Exception fx){
+
+Log.e("FIle Exception :",fx.getMessage());
+       }
+
         JSONArray response = new JSONArray(stringfile);
 
         for (int i = 0; i < response.length(); i++) {
@@ -534,8 +536,12 @@ public class  VideoFragment extends Fragment {
             @Override
             public void onResponse(JSONArray response) {
                 Log.e("Response : ", String.valueOf(response));
-                FileManager fileManager = new FileManager();
-                fileManager.writeToFile("live.dat", String.valueOf(response), getContext());
+                try {
+                    FileManager fileManager = new FileManager();
+                    fileManager.writeToFile("live.dat", String.valueOf(response), getContext());
+                }catch (Exception fx){
+                    Log.e("File Exception : ",fx.getMessage());
+                }
                 for (int i = 0; i < response.length(); i++) {
                     try {
                         JSONObject jsonObject = response.getJSONObject(i);
@@ -555,11 +561,11 @@ public class  VideoFragment extends Fragment {
                     } catch (JSONException e) {
                         Log.e("Json Exception : ", e.getMessage());
                         e.printStackTrace();
-                        progressDialog.dismiss();
+
                     }
                 }
                 liveAdapter.notifyDataSetChanged();
-                progressDialog.dismiss();
+
             }
         }, new Response.ErrorListener() {
             @Override
@@ -570,7 +576,7 @@ public class  VideoFragment extends Fragment {
                     //e.printStackTrace();
                 }
                 Log.e("Volley Error : ", error.toString());
-                progressDialog.dismiss();
+
 
 
 
@@ -597,196 +603,185 @@ public class  VideoFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         // Setup any handles to view objects here
         // EditText etFoo = (EditText) view.findViewById(R.id.etFoo);
+try {
+    TabHost host = (TabHost) view.findViewById(R.id.tabHost);
+    host.setup();
 
-        TabHost host = (TabHost) view.findViewById(R.id.tabHost);
-        host.setup();
+    //Tab 1
+    TabHost.TabSpec spec = host.newTabSpec("Music");
+    spec.setContent(R.id.tab1);
 
-        //Tab 1
-        TabHost.TabSpec spec = host.newTabSpec("Music");
-        spec.setContent(R.id.tab1);
+    spec.setIndicator("Music");
+    host.addTab(spec);
 
-        spec.setIndicator("Music");
-        host.addTab(spec);
+    //Tab 2
+    spec = host.newTabSpec("Drama");
+    spec.setContent(R.id.tab2);
+    spec.setIndicator("Drama");
+    host.addTab(spec);
 
-        //Tab 2
-        spec = host.newTabSpec("Drama");
-        spec.setContent(R.id.tab2);
-        spec.setIndicator("Drama");
-        host.addTab(spec);
-
-        //Tab 3
-        spec = host.newTabSpec("Movies");
-        spec.setContent(R.id.tab3);
-        spec.setIndicator("Movies");
-        host.addTab(spec);
-
-
-        //Tab 4
-        spec = host.newTabSpec("TV-Show");
-        spec.setContent(R.id.tab4);
-        spec.setIndicator("TV-Show");
-        host.addTab(spec);
+    //Tab 3
+    spec = host.newTabSpec("Movies");
+    spec.setContent(R.id.tab3);
+    spec.setIndicator("Movies");
+    host.addTab(spec);
 
 
-        //Tab 5
-        spec = host.newTabSpec("MISC");
-        spec.setContent(R.id.tab5);
-        spec.setIndicator("MISC");
-        host.addTab(spec);
+    //Tab 4
+    spec = host.newTabSpec("TV-Show");
+    spec.setContent(R.id.tab4);
+    spec.setIndicator("TV-Show");
+    host.addTab(spec);
 
 
-
-        //Tab 6
-        spec = host.newTabSpec("LIVE");
-        spec.setContent(R.id.tab6);
-        spec.setIndicator("LIVE");
-        host.addTab(spec);
-
-
-        //____________________________________________
+    //Tab 5
+    spec = host.newTabSpec("MISC");
+    spec.setContent(R.id.tab5);
+    spec.setIndicator("MISC");
+    host.addTab(spec);
 
 
+    //Tab 6
+    spec = host.newTabSpec("LIVE");
+    spec.setContent(R.id.tab6);
+    spec.setIndicator("LIVE");
+    host.addTab(spec);
 
-        recyclerView = (RecyclerView)view.findViewById(R.id.recycler_view);
 
-        albumList = new ArrayList<>();
-        adapter = new AlbumsAdapter(getContext(), albumList);
+    //____________________________________________
 
-        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getContext(), 2);
-        recyclerView.setLayoutManager(mLayoutManager);
-       // recyclerView.addItemDecoration(new MainActivity.GridSpacingItemDecoration(2, dpToPx(10), true));
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(adapter);
-        try {
-            getofflineMusicData();
-        } catch (JSONException e) {
 
-            Log.e("JsonException : ",e.getMessage());
-        }
-        getMusicData();
+    recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+
+    albumList = new ArrayList<>();
+    adapter = new AlbumsAdapter(getContext(), albumList);
+
+    RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getContext(), 2);
+    recyclerView.setLayoutManager(mLayoutManager);
+    // recyclerView.addItemDecoration(new MainActivity.GridSpacingItemDecoration(2, dpToPx(10), true));
+    recyclerView.setItemAnimator(new DefaultItemAnimator());
+    recyclerView.setAdapter(adapter);
+    try {
+        getofflineMusicData();
+    } catch (JSONException e) {
+
+        Log.e("JsonException : ", e.getMessage());
+    }
+    getMusicData();
 
 //_______________________________________________________________
 
 
+    recyclerViewdrama = (RecyclerView) view.findViewById(R.id.recycler_view2);
 
-        recyclerViewdrama = (RecyclerView)view.findViewById(R.id.recycler_view2);
+    dramaList = new ArrayList<>();
+    dramaAdapter = new AlbumsAdapter(getContext(), dramaList);
 
-        dramaList = new ArrayList<>();
-        dramaAdapter = new AlbumsAdapter(getContext(), dramaList);
+    mLayoutManager = new GridLayoutManager(getContext(), 2);
+    recyclerViewdrama.setLayoutManager(mLayoutManager);
+    // recyclerView.addItemDecoration(new MainActivity.GridSpacingItemDecoration(2, dpToPx(10), true));
+    recyclerViewdrama.setItemAnimator(new DefaultItemAnimator());
+    recyclerViewdrama.setAdapter(dramaAdapter);
+    try {
+        getofflineDramaData();
+    } catch (JSONException e) {
 
-  mLayoutManager = new GridLayoutManager(getContext(), 2);
-        recyclerViewdrama.setLayoutManager(mLayoutManager);
-        // recyclerView.addItemDecoration(new MainActivity.GridSpacingItemDecoration(2, dpToPx(10), true));
-        recyclerViewdrama.setItemAnimator(new DefaultItemAnimator());
-        recyclerViewdrama.setAdapter(dramaAdapter);
-        try {
-            getofflineDramaData();
-        } catch (JSONException e) {
-
-            Log.e("JsonException : ",e.getMessage());
-        }
-        getDramaData();
-
-
-
+        Log.e("JsonException : ", e.getMessage());
+    }
+    getDramaData();
 
 
 //_______________________________________________________________
 
 
-    recyclerViewmovies = (RecyclerView)view.findViewById(R.id.recycler_view3);
+    recyclerViewmovies = (RecyclerView) view.findViewById(R.id.recycler_view3);
 
     filmList = new ArrayList<>();
     filmAdapter = new AlbumsAdapter(getContext(), filmList);
 
     mLayoutManager = new GridLayoutManager(getContext(), 2);
-        recyclerViewmovies.setLayoutManager(mLayoutManager);
+    recyclerViewmovies.setLayoutManager(mLayoutManager);
     // recyclerView.addItemDecoration(new MainActivity.GridSpacingItemDecoration(2, dpToPx(10), true));
-        recyclerViewmovies.setItemAnimator(new DefaultItemAnimator());
-        recyclerViewmovies.setAdapter(filmAdapter);
-        try {
+    recyclerViewmovies.setItemAnimator(new DefaultItemAnimator());
+    recyclerViewmovies.setAdapter(filmAdapter);
+    try {
         getofflineFilmData();
     } catch (JSONException e) {
 
-        Log.e("JsonException : ",e.getMessage());
+        Log.e("JsonException : ", e.getMessage());
     }
     getFilmData();
 
 
+//_______________________________________________________________
+
+
+    recyclerViewtv = (RecyclerView) view.findViewById(R.id.recycler_view4);
+
+    tvList = new ArrayList<>();
+    tvAdapter = new AlbumsAdapter(getContext(), tvList);
+
+    mLayoutManager = new GridLayoutManager(getContext(), 2);
+    recyclerViewtv.setLayoutManager(mLayoutManager);
+    // recyclerView.addItemDecoration(new MainActivity.GridSpacingItemDecoration(2, dpToPx(10), true));
+    recyclerViewtv.setItemAnimator(new DefaultItemAnimator());
+    recyclerViewtv.setAdapter(tvAdapter);
+    try {
+        getofflinetvData();
+    } catch (JSONException e) {
+
+        Log.e("JsonException : ", e.getMessage());
+    }
+    gettvData();
 
 
 //_______________________________________________________________
 
 
+    recyclerViewmisc = (RecyclerView) view.findViewById(R.id.recycler_view5);
 
-        recyclerViewtv = (RecyclerView)view.findViewById(R.id.recycler_view4);
+    miscList = new ArrayList<>();
+    miscAdapter = new AlbumsAdapter(getContext(), miscList);
 
-        tvList = new ArrayList<>();
-        tvAdapter = new AlbumsAdapter(getContext(), tvList);
+    mLayoutManager = new GridLayoutManager(getContext(), 2);
+    recyclerViewmisc.setLayoutManager(mLayoutManager);
+    // recyclerView.addItemDecoration(new MainActivity.GridSpacingItemDecoration(2, dpToPx(10), true));
+    recyclerViewmisc.setItemAnimator(new DefaultItemAnimator());
+    recyclerViewmisc.setAdapter(miscAdapter);
+    try {
+        getofflinemiscData();
+    } catch (JSONException e) {
 
-        mLayoutManager = new GridLayoutManager(getContext(), 2);
-        recyclerViewtv.setLayoutManager(mLayoutManager);
-        // recyclerView.addItemDecoration(new MainActivity.GridSpacingItemDecoration(2, dpToPx(10), true));
-        recyclerViewtv.setItemAnimator(new DefaultItemAnimator());
-        recyclerViewtv.setAdapter(tvAdapter);
-        try {
-            getofflinetvData();
-        } catch (JSONException e) {
-
-            Log.e("JsonException : ",e.getMessage());
-        }
-        gettvData();
-
+        Log.e("JsonException : ", e.getMessage());
+    }
+    getmiscData();
 
 
 //_______________________________________________________________
 
 
+    recyclerViewlive = (RecyclerView) view.findViewById(R.id.recycler_view6);
 
-        recyclerViewmisc = (RecyclerView)view.findViewById(R.id.recycler_view5);
+    liveList = new ArrayList<>();
+    liveAdapter = new AlbumsAdapter(getContext(), liveList);
 
-        miscList = new ArrayList<>();
-        miscAdapter = new AlbumsAdapter(getContext(), miscList);
+    mLayoutManager = new GridLayoutManager(getContext(), 2);
+    recyclerViewlive.setLayoutManager(mLayoutManager);
+    // recyclerView.addItemDecoration(new MainActivity.GridSpacingItemDecoration(2, dpToPx(10), true));
+    recyclerViewlive.setItemAnimator(new DefaultItemAnimator());
+    recyclerViewlive.setAdapter(liveAdapter);
+    try {
+        getofflineliveData();
+    } catch (JSONException e) {
 
-        mLayoutManager = new GridLayoutManager(getContext(), 2);
-        recyclerViewmisc.setLayoutManager(mLayoutManager);
-        // recyclerView.addItemDecoration(new MainActivity.GridSpacingItemDecoration(2, dpToPx(10), true));
-        recyclerViewmisc.setItemAnimator(new DefaultItemAnimator());
-        recyclerViewmisc.setAdapter(miscAdapter);
-        try {
-            getofflinemiscData();
-        } catch (JSONException e) {
-
-            Log.e("JsonException : ",e.getMessage());
-        }
-        getmiscData();
-
+        Log.e("JsonException : ", e.getMessage());
+    }
+    getliveData();
 
 
-//_______________________________________________________________
-
-
-
-        recyclerViewlive = (RecyclerView)view.findViewById(R.id.recycler_view6);
-
-        liveList = new ArrayList<>();
-        liveAdapter = new AlbumsAdapter(getContext(), liveList);
-
-        mLayoutManager = new GridLayoutManager(getContext(), 2);
-        recyclerViewlive.setLayoutManager(mLayoutManager);
-        // recyclerView.addItemDecoration(new MainActivity.GridSpacingItemDecoration(2, dpToPx(10), true));
-        recyclerViewlive.setItemAnimator(new DefaultItemAnimator());
-        recyclerViewlive.setAdapter(liveAdapter);
-        try {
-            getofflineliveData();
-        } catch (JSONException e) {
-
-            Log.e("JsonException : ",e.getMessage());
-        }
-        getliveData();
-
-
-
+}catch (Exception ex){
+    Log.e("Exception : ",ex.getMessage());
+}
 
 
     }

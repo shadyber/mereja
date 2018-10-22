@@ -64,11 +64,7 @@ public class BlogFragment extends Fragment {
 
     }
     private void getNewsData() {
-        final ProgressDialog progressDialog = new ProgressDialog(getContext());
-        progressDialog.setMessage("Loading...");
-        progressDialog.show();
-
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
+         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
                 Log.e("Response : ", String.valueOf(response));
@@ -93,11 +89,11 @@ public class BlogFragment extends Fragment {
                     } catch (JSONException e) {
                         Log.e("Json Exception : ", e.getMessage());
                         e.printStackTrace();
-                        progressDialog.dismiss();
+
                     }
                 }
                 adapter.notifyDataSetChanged();
-                progressDialog.dismiss();
+
             }
         }, new Response.ErrorListener() {
             @Override
@@ -108,7 +104,6 @@ public class BlogFragment extends Fragment {
                     //e.printStackTrace();
                 }
                 Log.e("Volley Error : ", error.toString());
-                progressDialog.dismiss();
 
 
 
@@ -136,30 +131,33 @@ public class BlogFragment extends Fragment {
         // EditText etFoo = (EditText) view.findViewById(R.id.etFoo);
 
 
+try {
 
+    recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
 
-        recyclerView = (RecyclerView)view.findViewById(R.id.recycler_view);
+    newsList = new ArrayList<>();
+    adapter = new NewsAdapter(getContext(), newsList);
 
-        newsList = new ArrayList<>();
-        adapter = new NewsAdapter(getContext(), newsList);
+    RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getContext(), 1);
+    recyclerView.setLayoutManager(mLayoutManager);
+    // recyclerView.addItemDecoration(new MainActivity.GridSpacingItemDecoration(2, dpToPx(10), true));
+    recyclerView.setItemAnimator(new DefaultItemAnimator());
+    recyclerView.setAdapter(adapter);
+    try {
+        getofflinenewsData();
+    } catch (JSONException e) {
 
-        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getContext(), 1);
-        recyclerView.setLayoutManager(mLayoutManager);
-        // recyclerView.addItemDecoration(new MainActivity.GridSpacingItemDecoration(2, dpToPx(10), true));
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(adapter);
-        try {
-            getofflinenewsData();
-        } catch (JSONException e) {
+        Log.e("JsonException : ", e.getMessage());
+    }
 
-            Log.e("JsonException : ",e.getMessage());
-        }
-
-        getNewsData();
+    getNewsData();
 //_______________________________________________________________
 
 
+}catch (Exception ex){
 
+    Log.e("Exception :",ex.getMessage());
+}
     }
 
 }

@@ -79,10 +79,7 @@ public class NewsFragment extends Fragment {
     }
     private void getNewsData() {
         final ProgressDialog progressDialog = new ProgressDialog(getContext());
-        progressDialog.setMessage("Loading...");
-        progressDialog.show();
-
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
+         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
                 Log.e("Response : ", String.valueOf(response));
@@ -107,11 +104,11 @@ public class NewsFragment extends Fragment {
                     } catch (JSONException e) {
                         Log.e("Json Exception : ", e.getMessage());
                         e.printStackTrace();
-                        progressDialog.dismiss();
+
                     }
                 }
                 adapter.notifyDataSetChanged();
-                progressDialog.dismiss();
+
             }
         }, new Response.ErrorListener() {
             @Override
@@ -122,7 +119,6 @@ public class NewsFragment extends Fragment {
                     //e.printStackTrace();
                 }
                 Log.e("Volley Error : ", error.toString());
-                progressDialog.dismiss();
 
 
 
@@ -166,8 +162,6 @@ public class NewsFragment extends Fragment {
     }
     private void getethioNewsData() {
         final ProgressDialog progressDialog = new ProgressDialog(getContext());
-        progressDialog.setMessage("Loading...");
-        progressDialog.show();
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(urlethiopia, new Response.Listener<JSONArray>() {
             @Override
@@ -194,11 +188,11 @@ public class NewsFragment extends Fragment {
                     } catch (JSONException e) {
                         Log.e("Json Exception : ", e.getMessage());
                         e.printStackTrace();
-                        progressDialog.dismiss();
+
                     }
                 }
                 ethioAdapter.notifyDataSetChanged();
-                progressDialog.dismiss();
+
             }
         }, new Response.ErrorListener() {
             @Override
@@ -209,7 +203,6 @@ public class NewsFragment extends Fragment {
                     //e.printStackTrace();
                 }
                 Log.e("Volley Error : ", error.toString());
-                progressDialog.dismiss();
 
 
 
@@ -281,11 +274,11 @@ public class NewsFragment extends Fragment {
                     } catch (JSONException e) {
                         Log.e("Json Exception : ", e.getMessage());
                         e.printStackTrace();
-                        progressDialog.dismiss();
+
                     }
                 }
                 afroAdapter.notifyDataSetChanged();
-                progressDialog.dismiss();
+
             }
         }, new Response.ErrorListener() {
             @Override
@@ -296,7 +289,6 @@ public class NewsFragment extends Fragment {
                     //e.printStackTrace();
                 }
                 Log.e("Volley Error : ", error.toString());
-                progressDialog.dismiss();
 
 
 
@@ -367,11 +359,11 @@ public class NewsFragment extends Fragment {
                     } catch (JSONException e) {
                         Log.e("Json Exception : ", e.getMessage());
                         e.printStackTrace();
-                        progressDialog.dismiss();
+
                     }
                 }
                 worldAdapter.notifyDataSetChanged();
-                progressDialog.dismiss();
+
             }
         }, new Response.ErrorListener() {
             @Override
@@ -382,7 +374,6 @@ public class NewsFragment extends Fragment {
                     //e.printStackTrace();
                 }
                 Log.e("Volley Error : ", error.toString());
-                progressDialog.dismiss();
 
 
 
@@ -407,135 +398,128 @@ public class NewsFragment extends Fragment {
         // Setup any handles to view objects here
         // EditText etFoo = (EditText) view.findViewById(R.id.etFoo);
 
+try {
+
+    TabHost host = (TabHost) view.findViewById(R.id.tabHost);
+    host.setup();
+
+    //Tab 1
+    TabHost.TabSpec spec = host.newTabSpec("Recent");
+    spec.setContent(R.id.tab1);
+
+    spec.setIndicator("Recent");
+    host.addTab(spec);
+
+    //Tab 2
+    spec = host.newTabSpec("Ethiopia");
+    spec.setContent(R.id.tab2);
+    spec.setIndicator("Ethiopia");
+    host.addTab(spec);
+
+    //Tab 3
+    spec = host.newTabSpec("Africa");
+    spec.setContent(R.id.tab3);
+    spec.setIndicator("Africa");
+    host.addTab(spec);
+
+    //Tab 3
+    spec = host.newTabSpec("World");
+    spec.setContent(R.id.tab3);
+    spec.setIndicator("World");
+    host.addTab(spec);
 
 
-        TabHost host = (TabHost) view.findViewById(R.id.tabHost);
-        host.setup();
-
-        //Tab 1
-        TabHost.TabSpec spec = host.newTabSpec("Recent");
-        spec.setContent(R.id.tab1);
-
-        spec.setIndicator("Recent");
-        host.addTab(spec);
-
-        //Tab 2
-        spec = host.newTabSpec("Ethiopia");
-        spec.setContent(R.id.tab2);
-        spec.setIndicator("Ethiopia");
-        host.addTab(spec);
-
-        //Tab 3
-        spec = host.newTabSpec("Africa");
-        spec.setContent(R.id.tab3);
-        spec.setIndicator("Africa");
-        host.addTab(spec);
-
-        //Tab 3
-        spec = host.newTabSpec("World");
-        spec.setContent(R.id.tab3);
-        spec.setIndicator("World");
-        host.addTab(spec);
+    //____________________________________________
 
 
+    recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
 
-        //____________________________________________
+    newsList = new ArrayList<>();
+    adapter = new NewsAdapter(getContext(), newsList);
 
+    RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getContext(), 2);
+    recyclerView.setLayoutManager(mLayoutManager);
+    // recyclerView.addItemDecoration(new MainActivity.GridSpacingItemDecoration(2, dpToPx(10), true));
+    recyclerView.setItemAnimator(new DefaultItemAnimator());
+    recyclerView.setAdapter(adapter);
+    try {
+        getofflinenewsData();
+    } catch (JSONException e) {
 
+        Log.e("JsonException : ", e.getMessage());
+    }
 
-        recyclerView = (RecyclerView)view.findViewById(R.id.recycler_view);
-
-        newsList = new ArrayList<>();
-        adapter = new NewsAdapter(getContext(), newsList);
-
-        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getContext(), 2);
-        recyclerView.setLayoutManager(mLayoutManager);
-        // recyclerView.addItemDecoration(new MainActivity.GridSpacingItemDecoration(2, dpToPx(10), true));
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(adapter);
-        try {
-            getofflinenewsData();
-        } catch (JSONException e) {
-
-            Log.e("JsonException : ",e.getMessage());
-        }
-
-getNewsData();
+    getNewsData();
 //_______________________________________________________________
 
 
+    recyclerViewethio = (RecyclerView) view.findViewById(R.id.recycler_view2);
 
+    ethioList = new ArrayList<>();
+    ethioAdapter = new NewsAdapter(getContext(), ethioList);
 
-        recyclerViewethio = (RecyclerView)view.findViewById(R.id.recycler_view2);
+    mLayoutManager = new GridLayoutManager(getContext(), 2);
+    recyclerViewethio.setLayoutManager(mLayoutManager);
+    // recyclerView.addItemDecoration(new MainActivity.GridSpacingItemDecoration(2, dpToPx(10), true));
+    recyclerViewethio.setItemAnimator(new DefaultItemAnimator());
+    recyclerViewethio.setAdapter(ethioAdapter);
+    try {
+        getoffliethionenewsData();
+    } catch (JSONException e) {
 
-        ethioList = new ArrayList<>();
-        ethioAdapter = new NewsAdapter(getContext(), ethioList);
+        Log.e("JsonException : ", e.getMessage());
+    }
 
-         mLayoutManager = new GridLayoutManager(getContext(), 2);
-        recyclerViewethio.setLayoutManager(mLayoutManager);
-        // recyclerView.addItemDecoration(new MainActivity.GridSpacingItemDecoration(2, dpToPx(10), true));
-        recyclerViewethio.setItemAnimator(new DefaultItemAnimator());
-        recyclerViewethio.setAdapter(ethioAdapter);
-        try {
-            getoffliethionenewsData();
-        } catch (JSONException e) {
-
-            Log.e("JsonException : ",e.getMessage());
-        }
-
-        getethioNewsData();
+    getethioNewsData();
 //_______________________________________________________________
 
 
+    recyclerViewafrica = (RecyclerView) view.findViewById(R.id.recycler_view3);
 
+    afroList = new ArrayList<>();
+    afroAdapter = new NewsAdapter(getContext(), afroList);
 
+    mLayoutManager = new GridLayoutManager(getContext(), 2);
+    recyclerViewafrica.setLayoutManager(mLayoutManager);
+    // recyclerView.addItemDecoration(new MainActivity.GridSpacingItemDecoration(2, dpToPx(10), true));
+    recyclerViewafrica.setItemAnimator(new DefaultItemAnimator());
+    recyclerViewafrica.setAdapter(afroAdapter);
+    try {
+        getoffliafronenewsData();
+    } catch (JSONException e) {
 
+        Log.e("JsonException : ", e.getMessage());
+    }
 
-        recyclerViewafrica = (RecyclerView)view.findViewById(R.id.recycler_view3);
-
-       afroList = new ArrayList<>();
-        afroAdapter = new NewsAdapter(getContext(), afroList);
-
-        mLayoutManager = new GridLayoutManager(getContext(), 2);
-        recyclerViewafrica.setLayoutManager(mLayoutManager);
-        // recyclerView.addItemDecoration(new MainActivity.GridSpacingItemDecoration(2, dpToPx(10), true));
-        recyclerViewafrica.setItemAnimator(new DefaultItemAnimator());
-        recyclerViewafrica.setAdapter(afroAdapter);
-        try {
-            getoffliafronenewsData();
-        } catch (JSONException e) {
-
-            Log.e("JsonException : ",e.getMessage());
-        }
-
-        getafroNewsData();
+    getafroNewsData();
 //_______________________________________________________________
 
 
-        recyclerViewworld = (RecyclerView)view.findViewById(R.id.recycler_view4);
+    recyclerViewworld = (RecyclerView) view.findViewById(R.id.recycler_view4);
 
-        worldList = new ArrayList<>();
-        worldAdapter = new NewsAdapter(getContext(), worldList);
+    worldList = new ArrayList<>();
+    worldAdapter = new NewsAdapter(getContext(), worldList);
 
-        mLayoutManager = new GridLayoutManager(getContext(), 2);
-        recyclerViewworld.setLayoutManager(mLayoutManager);
-        // recyclerView.addItemDecoration(new MainActivity.GridSpacingItemDecoration(2, dpToPx(10), true));
-        recyclerViewworld.setItemAnimator(new DefaultItemAnimator());
-        recyclerViewworld.setAdapter(worldAdapter);
-        try {
-            getofflineworldnenewsData();
-        } catch (JSONException e) {
+    mLayoutManager = new GridLayoutManager(getContext(), 2);
+    recyclerViewworld.setLayoutManager(mLayoutManager);
+    // recyclerView.addItemDecoration(new MainActivity.GridSpacingItemDecoration(2, dpToPx(10), true));
+    recyclerViewworld.setItemAnimator(new DefaultItemAnimator());
+    recyclerViewworld.setAdapter(worldAdapter);
+    try {
+        getofflineworldnenewsData();
+    } catch (JSONException e) {
 
-            Log.e("JsonException : ",e.getMessage());
-        }
+        Log.e("JsonException : ", e.getMessage());
+    }
 
-        getworldNewsData();
+    getworldNewsData();
 //_______________________________________________________________
 
 
+}catch (Exception ex){
 
-
-
+    Log.e("exeption :",ex.getMessage());
+}
 
 
 
