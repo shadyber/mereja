@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Mereja</string>
+    <string name="title_home">Home</string>
+    <string name="title_videos">Videos</string>
+    <string name="title_news">News</string>
+    <string name="title_blog">Blog</string>
+
+
+    <string name="action_add_favourite">Add to Favourites</string>
+    <string name="action_play_next">Play Video</string>
+    <string name="backdrop_title">LOVE Video</string>
+</resources>
