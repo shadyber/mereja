@@ -6,18 +6,28 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.reward.RewardItem;
+import com.google.android.gms.ads.reward.RewardedVideoAd;
+import com.google.android.gms.ads.reward.RewardedVideoAdListener;
 import com.google.android.youtube.player.YouTubePlayerView;
 import com.squareup.picasso.Picasso;
 
-public class ReadActivity extends AppCompatActivity {
+import static android.widget.Toast.LENGTH_LONG;
+
+public class ReadActivity extends AppCompatActivity  implements RewardedVideoAdListener {
+    private RewardedVideoAd mRewardedVideoAd;
 
     private InterstitialAd mInterstitialAd;
 
@@ -33,16 +43,68 @@ public class ReadActivity extends AppCompatActivity {
 
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.actionbar_menu, menu);
+        // ...
+        return true;
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.action_like:
+
+                return true;
+            case R.id.action_reward:
+                showReardVideo();
+                return true;
+            case  R.id.action_share:
+
+                return true;
+            default:
+                showReardVideo();
+                return super.onOptionsItemSelected(item);
+        }
+
+    }
+
+
+    private void loadRewardedVideoAd() {
+        mRewardedVideoAd.loadAd(getResources().getString(R.string.reward_1),
+                new AdRequest.Builder().build());
+    }
+
+
+
+    private AdView mAdView,mAdView2;
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_read);
 
 
         MobileAds.initialize(this,
-                "ca-app-pub-3780418992794226~3021814007");
+                getResources().getString(R.string.admob_app_id));
+
+
+
+        mAdView = findViewById(R.id.adView);
+        mAdView2=findViewById(R.id.adView2);
+
+
+
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+
+        AdRequest adRequest1=new AdRequest.Builder().build();
+        mAdView2.loadAd(adRequest1);
+
 
         mInterstitialAd = new InterstitialAd(this);
-        mInterstitialAd.setAdUnitId("ca-app-pub-3780418992794226/3129625210");
+        mInterstitialAd.setAdUnitId(getResources().getString(R.string.interatial_1));
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
 
 fab=findViewById(R.id.fab);
@@ -84,6 +146,18 @@ fab.setOnClickListener(new View.OnClickListener() {
             }
         });
 
+//_______________________rewarding
+
+
+
+//==++++++++++++++--------------- reward video
+
+        // Use an activity context to get the rewarded video instance.
+        mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(this);
+        mRewardedVideoAd.setRewardedVideoAdListener(this);
+        loadRewardedVideoAd();
+
+
 
         try {
             image=getIntent().getStringExtra("thumb_small");
@@ -95,6 +169,10 @@ fab.setOnClickListener(new View.OnClickListener() {
             Log.e("Error on Intent : ",ex.getMessage());
 
         }
+
+
+
+
         TextView txttitle=findViewById(R.id.txttitle);
         txttitle.setText(title);
 
@@ -108,4 +186,73 @@ fab.setOnClickListener(new View.OnClickListener() {
                 .into(imagepostertop);
 
     }
+
+
+    @Override
+    public void onRewarded(RewardItem reward) {
+        Toast.makeText(this, "onRewarded! currency: " + reward.getType() + "  amount: " +
+                reward.getAmount(), Toast.LENGTH_SHORT).show();
+        // Reward the user.
+    }
+
+    @Override
+    public void onRewardedVideoAdLeftApplication() {
+        Toast.makeText(this, "Come Back ",
+                Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onRewardedVideoAdClosed() {
+        loadRewardedVideoAd();
+    }
+
+    @Override
+    public void onRewardedVideoAdFailedToLoad(int errorCode) {
+        Toast.makeText(this, "Reward Video Fail to Load", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onRewardedVideoAdLoaded() {
+        Toast.makeText(this,"Video Ready Tab on the Diamond icon on top",LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onRewardedVideoAdOpened() {
+        Toast.makeText(this, "We Gonna Reward you when you Finish this Video", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onRewardedVideoStarted() {
+
+    }
+
+    @Override
+    public void onRewardedVideoCompleted() {
+        loadRewardedVideoAd();
+    }
+
+
+    @Override
+    public void onResume() {
+        mRewardedVideoAd.resume(this);
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        mRewardedVideoAd.pause(this);
+        super.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        mRewardedVideoAd.destroy(this);
+        super.onDestroy();
+    }
+
+    public void showReardVideo(){
+
+        mRewardedVideoAd.show();
+    }
+
 }

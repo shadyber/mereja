@@ -19,6 +19,8 @@
     <string name="interatial_1">ca-app-pub-3780418992794226/3129625210</string>
 
     <string name="reward_1">ca-app-pub-3780418992794226/7890997305</string>
+    <string name="action_share">Share</string>
+    <string name="action_get_reward">Get Reward by Watching Video</string>
 
 
 </resources>
