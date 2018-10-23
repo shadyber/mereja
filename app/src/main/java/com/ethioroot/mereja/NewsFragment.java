@@ -301,10 +301,27 @@ public class NewsFragment extends Fragment {
 
 
     //----------------- Drama Recicle View
-    private void getofflineworldnenewsData() throws JSONException {
-        FileManager fileManager = new FileManager();
-        String stringfile = fileManager.readFromFile("worldnews.dat", getContext());
-        JSONArray response = new JSONArray(stringfile);
+    private void getofflineworldnenewsData()  {
+        String stringfile ="";
+  try {
+
+      FileManager fileManager = new FileManager();
+    stringfile = fileManager.readFromFile("worldnews.dat", getContext());
+
+  }catch (Exception fx){
+
+Log.e("file Exception : ",fx.getMessage());
+return;
+  }
+
+
+        JSONArray response = null;
+        try {
+            response = new JSONArray(stringfile);
+        } catch (JSONException e) {
+            Log.e("Json Error : ",e.getMessage());
+            return;
+        }
 
         for (int i = 0; i < response.length(); i++) {
             try {
@@ -321,7 +338,7 @@ public class NewsFragment extends Fragment {
                 worldAdapter.notifyDataSetChanged();
             } catch (JSONException e) {
                 Log.e("Json Exception : ", e.getMessage());
-                e.printStackTrace();
+  return;
 
             }
             worldAdapter.notifyDataSetChanged();
@@ -332,14 +349,19 @@ public class NewsFragment extends Fragment {
 
     }
     private void getworldNewsData() {
-        final ProgressDialog progressDialog = new ProgressDialog(getContext());
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(urlworld, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
-                Log.e("Response : ", String.valueOf(response));
-                FileManager fileManager = new FileManager();
-                fileManager.writeToFile("worldnews.dat", String.valueOf(response), getContext());
+
+                try {
+                    FileManager fileManager = new FileManager();
+                    fileManager.writeToFile("worldnews.dat", String.valueOf(response), getContext());
+                }catch (Exception fx){
+                    Log.e("File Exception : ",fx.getMessage());
+                }
+
+
                 for (int i = 0; i < response.length(); i++) {
                     try {
                         JSONObject jsonObject = response.getJSONObject(i);
@@ -358,8 +380,7 @@ public class NewsFragment extends Fragment {
 
                     } catch (JSONException e) {
                         Log.e("Json Exception : ", e.getMessage());
-                        e.printStackTrace();
-
+                   return;
                     }
                 }
                 worldAdapter.notifyDataSetChanged();
@@ -368,11 +389,7 @@ public class NewsFragment extends Fragment {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                try {
-                    getofflineworldnenewsData();
-                } catch (JSONException e) {
-                    //e.printStackTrace();
-                }
+                getofflineworldnenewsData();
                 Log.e("Volley Error : ", error.toString());
 
 
@@ -505,12 +522,7 @@ try {
     // recyclerView.addItemDecoration(new MainActivity.GridSpacingItemDecoration(2, dpToPx(10), true));
     recyclerViewworld.setItemAnimator(new DefaultItemAnimator());
     recyclerViewworld.setAdapter(worldAdapter);
-    try {
-        getofflineworldnenewsData();
-    } catch (JSONException e) {
-
-        Log.e("JsonException : ", e.getMessage());
-    }
+    getofflineworldnenewsData();
 
     getworldNewsData();
 //_______________________________________________________________
@@ -520,9 +532,6 @@ try {
 
     Log.e("exeption :",ex.getMessage());
 }
-
-
-
 
     }
 

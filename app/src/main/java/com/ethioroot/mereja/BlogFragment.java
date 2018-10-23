@@ -33,10 +33,17 @@ public class BlogFragment extends Fragment {
     private NewsAdapter adapter;
     private List<News> newsList;
     //----------------- Drama Recicle View
-    private void getofflinenewsData() throws JSONException {
-        FileManager fileManager = new FileManager();
-        String stringfile = fileManager.readFromFile("blogrecent.dat", getContext());
-        JSONArray response = new JSONArray(stringfile);
+    private void getofflinenewsData() {
+        String stringfile ="";
+        JSONArray response =null;
+        try {
+            FileManager fileManager = new FileManager();
+            stringfile = fileManager.readFromFile("blogrecent.dat", getContext());
+            response = new JSONArray(stringfile);
+
+        }catch (Exception fx){
+            return;
+        }
 
         for (int i = 0; i < response.length(); i++) {
             try {
@@ -53,7 +60,7 @@ public class BlogFragment extends Fragment {
                 adapter.notifyDataSetChanged();
             } catch (JSONException e) {
                 Log.e("Json Exception : ", e.getMessage());
-                e.printStackTrace();
+               return;
 
             }
             adapter.notifyDataSetChanged();
@@ -67,10 +74,17 @@ public class BlogFragment extends Fragment {
          JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
-                Log.e("Response : ", String.valueOf(response));
-                FileManager fileManager = new FileManager();
+              try  {
+                    FileManager fileManager = new FileManager();
+
                 fileManager.writeToFile("blogrecent.dat", String.valueOf(response), getContext());
-                for (int i = 0; i < response.length(); i++) {
+            }catch (Exception fx){
+                  Log.e("File Exception : ",fx.getMessage());
+
+              }
+
+
+            for (int i = 0; i < response.length(); i++) {
                     try {
                         JSONObject jsonObject = response.getJSONObject(i);
 
@@ -88,7 +102,7 @@ public class BlogFragment extends Fragment {
 
                     } catch (JSONException e) {
                         Log.e("Json Exception : ", e.getMessage());
-                        e.printStackTrace();
+                       return;
 
                     }
                 }
@@ -98,11 +112,7 @@ public class BlogFragment extends Fragment {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                try {
-                    getofflinenewsData();
-                } catch (JSONException e) {
-                    //e.printStackTrace();
-                }
+                getofflinenewsData();
                 Log.e("Volley Error : ", error.toString());
 
 
@@ -143,12 +153,7 @@ try {
     // recyclerView.addItemDecoration(new MainActivity.GridSpacingItemDecoration(2, dpToPx(10), true));
     recyclerView.setItemAnimator(new DefaultItemAnimator());
     recyclerView.setAdapter(adapter);
-    try {
-        getofflinenewsData();
-    } catch (JSONException e) {
-
-        Log.e("JsonException : ", e.getMessage());
-    }
+    getofflinenewsData();
 
     getNewsData();
 //_______________________________________________________________

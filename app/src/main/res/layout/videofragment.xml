@@ -35,19 +35,18 @@
                 android:scrollbars="none" >
 
 
+                <TabWidget
+                    android:id="@android:id/tabs"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="2dp"
+                    android:background="@color/colorPrimary"
 
-            <TabWidget
-                android:id="@android:id/tabs"
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:layout_margin="2dp"
-                android:textAlignment="center"
-
-                android:scrollbarAlwaysDrawHorizontalTrack="true"
-                android:background="@color/colorPrimary"
-                android:fadingEdge="horizontal|vertical"
-                android:gravity="top|center_horizontal|center"
-                android:padding="2dp"></TabWidget>
+                    android:fadingEdge="horizontal|vertical"
+                    android:gravity="top|center_horizontal|center"
+                    android:padding="2dp"
+                    android:scrollbarAlwaysDrawHorizontalTrack="true"
+                    android:textAlignment="center"></TabWidget>
             </HorizontalScrollView>
 
             <FrameLayout
@@ -306,4 +305,18 @@
 
         </LinearLayout>
     </TabHost>
+
+    <ProgressBar
+        android:id="@+id/progressBar2"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="0dp"
+        android:layout_height="15dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </android.support.constraint.ConstraintLayout>

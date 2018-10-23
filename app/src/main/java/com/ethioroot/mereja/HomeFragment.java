@@ -36,10 +36,23 @@ public class HomeFragment extends Fragment {
 
 
 
-    private void getofflineMusicData() throws JSONException {
-        FileManager fileManager = new FileManager();
-        String stringfile = fileManager.readFromFile("home.dat", getContext());
-        JSONArray response = new JSONArray(stringfile);
+    private void getofflineHomeData(){
+        String stringfile="";
+        try {
+            FileManager fileManager = new FileManager();
+            stringfile = fileManager.readFromFile("home.dat", getContext());
+        }catch (Exception ex){
+            Log.e("File error :",ex.getMessage());
+            return;
+        }
+
+        JSONArray response = null;
+        try {
+            response = new JSONArray(stringfile);
+        } catch (JSONException e) {
+            Log.e("json Exception : ",e.getMessage());
+            return;
+        }
 
         for (int i = 0; i < response.length(); i++) {
             try {
@@ -57,7 +70,7 @@ public class HomeFragment extends Fragment {
                 adapter.notifyDataSetChanged();
             } catch (JSONException e) {
                 Log.e("Json Exception : ", e.getMessage());
-                e.printStackTrace();
+return;
 
             }
             adapter.notifyDataSetChanged();
@@ -73,9 +86,15 @@ public class HomeFragment extends Fragment {
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
-                Log.e("Response : ", String.valueOf(response));
-                FileManager fileManager = new FileManager();
-                fileManager.writeToFile("home.dat", String.valueOf(response), getContext());
+                try {
+                    Log.e("Response : ", String.valueOf(response));
+                    FileManager fileManager = new FileManager();
+                    fileManager.writeToFile("home.dat", String.valueOf(response), getContext());
+
+                }catch (Exception ex){
+
+                    Log.e("File Exception : ",ex.getMessage());
+                }
                 for (int i = 0; i < response.length(); i++) {
                     try {
                         JSONObject jsonObject = response.getJSONObject(i);
@@ -90,12 +109,11 @@ public class HomeFragment extends Fragment {
 
                         movie.setVideo(jsonObject.getString("vidId"));
                         albumList.add(movie);
-                        adapter.notifyDataSetChanged();
 
                     } catch (JSONException e) {
                         Log.e("Json Exception : ", e.getMessage());
-                        e.printStackTrace();
-
+                        adapter.notifyDataSetChanged();
+                            return;
                     }
                 }
                 adapter.notifyDataSetChanged();
@@ -104,11 +122,7 @@ public class HomeFragment extends Fragment {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                try {
-                    getofflineMusicData();
-                } catch (JSONException e) {
-                    //e.printStackTrace();
-                }
+                getofflineHomeData();
                 Log.e("Volley Error : ", error.toString());
 
 
@@ -147,19 +161,16 @@ public class HomeFragment extends Fragment {
             // recyclerView.addItemDecoration(new MainActivity.GridSpacingItemDecoration(2, dpToPx(10), true));
             recyclerView.setItemAnimator(new DefaultItemAnimator());
             recyclerView.setAdapter(adapter);
-            try {
-                getofflineMusicData();
-            } catch (JSONException e) {
-
-                Log.e("JsonException : ", e.getMessage());
-            }
+            getofflineHomeData();
 
             getHomeData();
 //_______________________________________________________________
 
         }catch (Exception ex){
-            Log.e("Exception :",ex.getMessage());
+            Log.e("Exception all :",ex.getMessage());
         }
+
+        getHomeData();
     }
 
 }

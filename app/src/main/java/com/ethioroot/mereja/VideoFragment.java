@@ -56,10 +56,24 @@ public class  VideoFragment extends Fragment {
 
 
 //----------------- Drama Recicle View
-    private void getofflineDramaData() throws JSONException {
-        FileManager fileManager = new FileManager();
-        String stringfile = fileManager.readFromFile("drama.dat", getContext());
-        JSONArray response = new JSONArray(stringfile);
+    private void getofflineDramaData() {
+        String stringfile="";
+        try {
+            FileManager fileManager = new FileManager();
+            stringfile = fileManager.readFromFile("drama.dat", getContext());
+        }catch (Exception ex){
+            Log.e("File Exception : ",ex.getMessage());
+            return;
+        }
+
+
+        JSONArray response = null;
+        try {
+            response = new JSONArray(stringfile);
+        } catch (JSONException e) {
+            Log.e("Json Exception : ",e.getMessage());
+            return;
+        }
 
         for (int i = 0; i < response.length(); i++) {
             try {
@@ -75,13 +89,14 @@ public class  VideoFragment extends Fragment {
                 movie.setVideo(jsonObject.getString("vidId"));
                 dramaList.add(movie);
                 dramaAdapter.notifyDataSetChanged();
+
+
             } catch (JSONException e) {
                 Log.e("Json Exception : ", e.getMessage());
-                e.printStackTrace();
+return;
 
             }
             dramaAdapter.notifyDataSetChanged();
-
 
         }
 
@@ -92,10 +107,16 @@ public class  VideoFragment extends Fragment {
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(urldrama, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
-                Log.e("Response : ", String.valueOf(response));
+
+            try {
                 FileManager fileManager = new FileManager();
                 fileManager.writeToFile("drama.dat", String.valueOf(response), getContext());
-                for (int i = 0; i < response.length(); i++) {
+            }catch (Exception fx){
+                Log.e("File Exception : ",fx.getMessage());
+            return;
+            }
+
+            for (int i = 0; i < response.length(); i++) {
                     try {
                         JSONObject jsonObject = response.getJSONObject(i);
 
@@ -110,10 +131,10 @@ public class  VideoFragment extends Fragment {
                         movie.setVideo(jsonObject.getString("vidId"));
                         dramaList.add(movie);
                         dramaAdapter.notifyDataSetChanged();
-
                     } catch (JSONException e) {
                         Log.e("Json Exception : ", e.getMessage());
-                        e.printStackTrace();
+                        return;
+
 
                     }
                 }
@@ -123,11 +144,7 @@ public class  VideoFragment extends Fragment {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                try {
-                    getofflineDramaData();
-                } catch (JSONException e) {
-                    //e.printStackTrace();
-                }
+                getofflineDramaData();
                 Log.e("Volley Error : ", error.toString());
 
 
@@ -142,10 +159,26 @@ public class  VideoFragment extends Fragment {
 //---------------------Music Recicle View
 
 
-    private void getofflineMusicData() throws JSONException {
-        FileManager fileManager = new FileManager();
-        String stringfile = fileManager.readFromFile("music.dat", getContext());
-        JSONArray response = new JSONArray(stringfile);
+    private void getofflineMusicData() {
+
+        String stringfile="";
+        try {
+
+            FileManager fileManager = new FileManager();
+            stringfile = fileManager.readFromFile("music.dat", getContext());
+
+        }catch (Exception fx){
+
+            Log.e("File Exception : ",fx.getMessage());
+            return;
+        }
+         JSONArray response = null;
+        try {
+            response = new JSONArray(stringfile);
+        } catch (JSONException e) {
+            Log.e("Json Exception",e.getMessage());
+            return;
+        }
 
         for (int i = 0; i < response.length(); i++) {
             try {
@@ -161,9 +194,9 @@ public class  VideoFragment extends Fragment {
                 movie.setVideo(jsonObject.getString("vidId"));
                 albumList.add(movie);
                 adapter.notifyDataSetChanged();
+
             } catch (JSONException e) {
                 Log.e("Json Exception : ", e.getMessage());
-                e.printStackTrace();
 
             }
             adapter.notifyDataSetChanged();
@@ -180,9 +213,15 @@ public class  VideoFragment extends Fragment {
             @Override
             public void onResponse(JSONArray response) {
                 Log.e("Response : ", String.valueOf(response));
-                FileManager fileManager = new FileManager();
-                fileManager.writeToFile("music.dat", String.valueOf(response), getContext());
-                for (int i = 0; i < response.length(); i++) {
+              try {
+                  FileManager fileManager = new FileManager();
+                  fileManager.writeToFile("music.dat", String.valueOf(response), getContext());
+              }catch (Exception ex){
+                  Log.e("file Error : ",ex.getMessage());
+              }
+
+
+              for (int i = 0; i < response.length(); i++) {
                     try {
                         JSONObject jsonObject = response.getJSONObject(i);
 
@@ -196,11 +235,11 @@ public class  VideoFragment extends Fragment {
 
                         movie.setVideo(jsonObject.getString("vidId"));
                         albumList.add(movie);
-                        adapter.notifyDataSetChanged();
 
                     } catch (JSONException e) {
                         Log.e("Json Exception : ", e.getMessage());
-                        e.printStackTrace();
+
+                        adapter.notifyDataSetChanged();
 
                     }
                 }
@@ -210,11 +249,7 @@ public class  VideoFragment extends Fragment {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                try {
-                    getofflineMusicData();
-                } catch (JSONException e) {
-                    //e.printStackTrace();
-                }
+                getofflineMusicData();
                 Log.e("Volley Error : ", error.toString());
 
 
@@ -229,10 +264,22 @@ public class  VideoFragment extends Fragment {
 
 
     //----------------- Drama Recicle View
-    private void getofflineFilmData() throws JSONException {
-        FileManager fileManager = new FileManager();
-        String stringfile = fileManager.readFromFile("film.dat", getContext());
-        JSONArray response = new JSONArray(stringfile);
+    private void getofflineFilmData() {
+        String stringfile="";
+        try {
+            FileManager fileManager = new FileManager();
+            stringfile = fileManager.readFromFile("film.dat", getContext());
+     }catch (Exception fx){
+            Log.e("File Exception : ",fx.getMessage());
+            return;
+        }
+         JSONArray response = null;
+        try {
+            response = new JSONArray(stringfile);
+        } catch (JSONException e) {
+            Log.e("Json Exception : ",e.getMessage());
+            return;
+        }
 
         for (int i = 0; i < response.length(); i++) {
             try {
@@ -247,10 +294,10 @@ public class  VideoFragment extends Fragment {
 
                 movie.setVideo(jsonObject.getString("vidId"));
                filmList.add(movie);
-                filmAdapter.notifyDataSetChanged();
-            } catch (JSONException e) {
+             } catch (JSONException e) {
                 Log.e("Json Exception : ", e.getMessage());
-                e.printStackTrace();
+
+                filmAdapter.notifyDataSetChanged();
 
             }
             filmAdapter.notifyDataSetChanged();
@@ -261,15 +308,20 @@ public class  VideoFragment extends Fragment {
 
     }
     private void getFilmData() {
-        final ProgressDialog progressDialog = new ProgressDialog(getContext());
 
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(urlmovie, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
                 Log.e("Response : ", String.valueOf(response));
-                FileManager fileManager = new FileManager();
-                fileManager.writeToFile("film.dat", String.valueOf(response), getContext());
+              try {
+                  FileManager fileManager = new FileManager();
+                  fileManager.writeToFile("film.dat", String.valueOf(response), getContext());
+
+              }catch (Exception fx){
+
+                  Log.e("File Exception : ",fx.getMessage());
+              }
                 for (int i = 0; i < response.length(); i++) {
                     try {
                         JSONObject jsonObject = response.getJSONObject(i);
@@ -285,12 +337,10 @@ public class  VideoFragment extends Fragment {
                         movie.setVideo(jsonObject.getString("vidId"));
                         filmList.add(movie);
                         filmAdapter.notifyDataSetChanged();
-
                     } catch (JSONException e) {
                         Log.e("Json Exception : ", e.getMessage());
-                        e.printStackTrace();
-
-                    }
+                        return;
+     }
                 }
                 dramaAdapter.notifyDataSetChanged();
 
@@ -298,15 +348,8 @@ public class  VideoFragment extends Fragment {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                try {
-                    getofflineFilmData();
-                } catch (JSONException e) {
-                    //e.printStackTrace();
-                }
+                getofflineFilmData();
                 Log.e("Volley Error : ", error.toString());
-
-
-
 
             }
         });
@@ -318,8 +361,18 @@ public class  VideoFragment extends Fragment {
 //---------------------Music Recicle View
 
     private void getofflinetvData() throws JSONException {
-        FileManager fileManager = new FileManager();
-        String stringfile = fileManager.readFromFile("tv.dat", getContext());
+
+        String stringfile="";
+        try {
+            FileManager fileManager = new FileManager();
+            stringfile = fileManager.readFromFile("tv.dat", getContext());
+        }catch (Exception fx){
+
+            Log.e("File Exception : ",fx.getMessage());
+            return;
+        }
+
+
         JSONArray response = new JSONArray(stringfile);
 
         for (int i = 0; i < response.length(); i++) {
@@ -338,7 +391,7 @@ public class  VideoFragment extends Fragment {
                 tvAdapter.notifyDataSetChanged();
             } catch (JSONException e) {
                 Log.e("Json Exception : ", e.getMessage());
-                e.printStackTrace();
+            return;
 
             }
             tvAdapter.notifyDataSetChanged();
@@ -349,14 +402,17 @@ public class  VideoFragment extends Fragment {
 
     }
     private void gettvData() {
-        final ProgressDialog progressDialog = new ProgressDialog(getContext());
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(urltv, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
                 Log.e("Response : ", String.valueOf(response));
-                FileManager fileManager = new FileManager();
-                fileManager.writeToFile("tv.dat", String.valueOf(response), getContext());
+              try {
+                  FileManager fileManager = new FileManager();
+                  fileManager.writeToFile("tv.dat", String.valueOf(response), getContext());
+              }catch (Exception ex){
+                  Log.e("File Exception : ",ex.getMessage());
+              }
                 for (int i = 0; i < response.length(); i++) {
                     try {
                         JSONObject jsonObject = response.getJSONObject(i);
@@ -372,11 +428,10 @@ public class  VideoFragment extends Fragment {
                         movie.setVideo(jsonObject.getString("vidId"));
                         tvList.add(movie);
                         tvAdapter.notifyDataSetChanged();
-
                     } catch (JSONException e) {
                         Log.e("Json Exception : ", e.getMessage());
-                        e.printStackTrace();
 
+return;
                     }
                 }
                 tvAdapter.notifyDataSetChanged();
@@ -388,11 +443,9 @@ public class  VideoFragment extends Fragment {
                 try {
                     getofflinetvData();
                 } catch (JSONException e) {
-                    //e.printStackTrace();
+                   return;
                 }
                 Log.e("Volley Error : ", error.toString());
-
-
 
 
             }
@@ -404,10 +457,25 @@ public class  VideoFragment extends Fragment {
 
 //---------------------Music Recicle View
 
-    private void getofflinemiscData() throws JSONException {
-        FileManager fileManager = new FileManager();
-        String stringfile = fileManager.readFromFile("misc.dat", getContext());
-        JSONArray response = new JSONArray(stringfile);
+    private void getofflinemiscData() {
+
+        String stringfile="";
+        try {
+
+            FileManager fileManager = new FileManager();
+            stringfile = fileManager.readFromFile("misc.dat", getContext());
+
+        }catch (Exception fx){
+            Log.e("File Exception : ",fx.getMessage());
+            return;
+        }
+         JSONArray response = null;
+        try {
+            response = new JSONArray(stringfile);
+        } catch (JSONException e) {
+            Log.e("Json Exception : ",e.getMessage());
+            return;
+        }
 
         for (int i = 0; i < response.length(); i++) {
             try {
@@ -422,10 +490,9 @@ public class  VideoFragment extends Fragment {
 
                 movie.setVideo(jsonObject.getString("vidId"));
                 miscList.add(movie);
-                miscAdapter.notifyDataSetChanged();
-            } catch (JSONException e) {
+              } catch (JSONException e) {
                 Log.e("Json Exception : ", e.getMessage());
-                e.printStackTrace();
+                miscAdapter.notifyDataSetChanged();
 
             }
             miscAdapter.notifyDataSetChanged();
@@ -436,14 +503,18 @@ public class  VideoFragment extends Fragment {
 
     }
     private void getmiscData() {
-        final ProgressDialog progressDialog = new ProgressDialog(getContext());
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(urlmisc, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
-                Log.e("Response : ", String.valueOf(response));
-                FileManager fileManager = new FileManager();
-                fileManager.writeToFile("misc.dat", String.valueOf(response), getContext());
+                try {
+                    FileManager fileManager = new FileManager();
+                    fileManager.writeToFile("misc.dat", String.valueOf(response), getContext());
+                }catch (Exception ex){
+                    Log.e("File Error : ",ex.getMessage());
+                    return;
+                }
+
                 for (int i = 0; i < response.length(); i++) {
                     try {
                         JSONObject jsonObject = response.getJSONObject(i);
@@ -460,10 +531,11 @@ public class  VideoFragment extends Fragment {
                         miscList.add(movie);
                         miscAdapter.notifyDataSetChanged();
 
+
                     } catch (JSONException e) {
                         Log.e("Json Exception : ", e.getMessage());
-                        e.printStackTrace();
 
+                       return;
                     }
                 }
                 miscAdapter.notifyDataSetChanged();
@@ -472,11 +544,7 @@ public class  VideoFragment extends Fragment {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                try {
-                    getofflinemiscData();
-                } catch (JSONException e) {
-                    //e.printStackTrace();
-                }
+                getofflinemiscData();
                 Log.e("Volley Error : ", error.toString());
 
 
@@ -491,7 +559,7 @@ public class  VideoFragment extends Fragment {
 
 //---------------------Music Recicle View
 
-    private void getofflineliveData() throws JSONException {
+    private void getofflineliveData()  {
         String stringfile ="";
         try {
            FileManager fileManager = new FileManager();
@@ -499,9 +567,16 @@ public class  VideoFragment extends Fragment {
        }catch (Exception fx){
 
 Log.e("FIle Exception :",fx.getMessage());
+return;
        }
 
-        JSONArray response = new JSONArray(stringfile);
+        JSONArray response = null;
+        try {
+            response = new JSONArray(stringfile);
+        } catch (JSONException e) {
+            Log.e("Json Exception : ",e.getMessage());
+            return;
+        }
 
         for (int i = 0; i < response.length(); i++) {
             try {
@@ -517,10 +592,11 @@ Log.e("FIle Exception :",fx.getMessage());
                 movie.setVideo(jsonObject.getString("vidId"));
                 liveList.add(movie);
                 liveAdapter.notifyDataSetChanged();
+
             } catch (JSONException e) {
                 Log.e("Json Exception : ", e.getMessage());
-                e.printStackTrace();
 
+            return;
             }
             liveAdapter.notifyDataSetChanged();
 
@@ -557,10 +633,10 @@ Log.e("FIle Exception :",fx.getMessage());
                         movie.setVideo(jsonObject.getString("vidId"));
                         liveList.add(movie);
                         liveAdapter.notifyDataSetChanged();
-
                     } catch (JSONException e) {
                         Log.e("Json Exception : ", e.getMessage());
-                        e.printStackTrace();
+
+                        return;
 
                     }
                 }
@@ -570,17 +646,9 @@ Log.e("FIle Exception :",fx.getMessage());
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                try {
-                    getofflineliveData();
-                } catch (JSONException e) {
-                    //e.printStackTrace();
-                }
+                getofflineliveData();
                 Log.e("Volley Error : ", error.toString());
-
-
-
-
-            }
+ }
         });
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         requestQueue.getCache();
@@ -661,12 +729,7 @@ try {
     // recyclerView.addItemDecoration(new MainActivity.GridSpacingItemDecoration(2, dpToPx(10), true));
     recyclerView.setItemAnimator(new DefaultItemAnimator());
     recyclerView.setAdapter(adapter);
-    try {
-        getofflineMusicData();
-    } catch (JSONException e) {
 
-        Log.e("JsonException : ", e.getMessage());
-    }
     getMusicData();
 
 //_______________________________________________________________
@@ -682,12 +745,7 @@ try {
     // recyclerView.addItemDecoration(new MainActivity.GridSpacingItemDecoration(2, dpToPx(10), true));
     recyclerViewdrama.setItemAnimator(new DefaultItemAnimator());
     recyclerViewdrama.setAdapter(dramaAdapter);
-    try {
-        getofflineDramaData();
-    } catch (JSONException e) {
-
-        Log.e("JsonException : ", e.getMessage());
-    }
+getofflineDramaData();
     getDramaData();
 
 
@@ -704,12 +762,7 @@ try {
     // recyclerView.addItemDecoration(new MainActivity.GridSpacingItemDecoration(2, dpToPx(10), true));
     recyclerViewmovies.setItemAnimator(new DefaultItemAnimator());
     recyclerViewmovies.setAdapter(filmAdapter);
-    try {
-        getofflineFilmData();
-    } catch (JSONException e) {
 
-        Log.e("JsonException : ", e.getMessage());
-    }
     getFilmData();
 
 
@@ -731,6 +784,7 @@ try {
     } catch (JSONException e) {
 
         Log.e("JsonException : ", e.getMessage());
+
     }
     gettvData();
 
@@ -748,12 +802,7 @@ try {
     // recyclerView.addItemDecoration(new MainActivity.GridSpacingItemDecoration(2, dpToPx(10), true));
     recyclerViewmisc.setItemAnimator(new DefaultItemAnimator());
     recyclerViewmisc.setAdapter(miscAdapter);
-    try {
-        getofflinemiscData();
-    } catch (JSONException e) {
-
-        Log.e("JsonException : ", e.getMessage());
-    }
+getofflineMusicData();
     getmiscData();
 
 
@@ -770,19 +819,13 @@ try {
     // recyclerView.addItemDecoration(new MainActivity.GridSpacingItemDecoration(2, dpToPx(10), true));
     recyclerViewlive.setItemAnimator(new DefaultItemAnimator());
     recyclerViewlive.setAdapter(liveAdapter);
-    try {
-        getofflineliveData();
-    } catch (JSONException e) {
-
-        Log.e("JsonException : ", e.getMessage());
-    }
+getofflineliveData();
     getliveData();
 
 
 }catch (Exception ex){
-    Log.e("Exception : ",ex.getMessage());
+    Log.e("General Exception : ",ex.getMessage());
 }
-
 
     }
 
