@@ -10,4 +10,15 @@
     <string name="action_play_next">Play Video</string>
     <string name="backdrop_title">LOVE Video</string>
     <string name="action_download">Download Video</string>
+
+    <string name="admob_app_id">ca-app-pub-3780418992794226~3021814007</string>
+    <string name="banner_1">ca-app-pub-3780418992794226/4286794214</string>
+    <string name="banner_2">ca-app-pub-3780418992794226/5456405650</string>
+
+    <string name="banner_3">ca-app-pub-3780418992794226/6330503629</string>
+    <string name="interatial_1">ca-app-pub-3780418992794226/3129625210</string>
+
+    <string name="reward_1">ca-app-pub-3780418992794226/7890997305</string>
+
+
 </resources>

@@ -52,11 +52,19 @@ public class NewsFragment extends Fragment {
 
 
     //----------------- Drama Recicle View
-    private void getofflinenewsData() throws JSONException {
-        FileManager fileManager = new FileManager();
-        String stringfile = fileManager.readFromFile("newsrecent.dat", getContext());
-        JSONArray response = new JSONArray(stringfile);
+    private void getofflinenewsData(){
+        String stringfile ="";
+        JSONArray response =null;
 
+        try {
+
+            FileManager fileManager = new FileManager();
+           stringfile = fileManager.readFromFile("newsrecent.dat", getContext());
+           response = new JSONArray(stringfile);
+        }catch (Exception ex){
+            Log.e("Exception : ",ex.getMessage());
+            return;
+        }
         for (int i = 0; i < response.length(); i++) {
             try {
                 JSONObject jsonObject = response.getJSONObject(i);
@@ -83,12 +91,18 @@ public class NewsFragment extends Fragment {
     }
     private void getNewsData() {
         final ProgressDialog progressDialog = new ProgressDialog(getContext());
+
          JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
-                Log.e("Response : ", String.valueOf(response));
-                FileManager fileManager = new FileManager();
-                fileManager.writeToFile("newsrecent.dat", String.valueOf(response), getContext());
+
+                try {
+                    FileManager fileManager = new FileManager();
+                    fileManager.writeToFile("newsrecent.dat", String.valueOf(response), getContext());
+
+                }catch (Exception ex){
+                    Log.e("File Exception : ",ex.getMessage());
+                }
                 for (int i = 0; i < response.length(); i++) {
                     try {
                         JSONObject jsonObject = response.getJSONObject(i);
@@ -117,11 +131,7 @@ public class NewsFragment extends Fragment {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                try {
-                    getofflinenewsData();
-                } catch (JSONException e) {
-                 return;
-                }
+                getofflinenewsData();
                 Log.e("Volley Error : ", error.toString());
 
 
@@ -434,13 +444,11 @@ return;
         // Setup any handles to view objects here
         // EditText etFoo = (EditText) view.findViewById(R.id.etFoo);
 
-
-
-        MobileAds.initialize(getContext(),
-                "ca-app-pub-3940256099942544~3347511713");
+     MobileAds.initialize(getContext(),
+                "ca-app-pub-3780418992794226~3021814007");
 
         mInterstitialAd = new InterstitialAd(getContext());
-        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+        mInterstitialAd.setAdUnitId("ca-app-pub-3780418992794226/3129625210");
 
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
 
@@ -495,13 +503,9 @@ try {
     // recyclerView.addItemDecoration(new MainActivity.GridSpacingItemDecoration(2, dpToPx(10), true));
     recyclerView.setItemAnimator(new DefaultItemAnimator());
     recyclerView.setAdapter(adapter);
-    try {
-        getofflinenewsData();
-    } catch (JSONException e) {
 
-        Log.e("JsonException : ", e.getMessage());
-        return;
-    }
+        getofflinenewsData();
+
 
     getNewsData();
 //_______________________________________________________________
@@ -562,7 +566,7 @@ try {
     } else {
         Log.d("TAG", "The interstitial wasn't loaded yet.");
     }
-    Log.e("exeption :",ex.getMessage());
+    Log.e("General exception :",ex.getMessage());
 }
 
     }
