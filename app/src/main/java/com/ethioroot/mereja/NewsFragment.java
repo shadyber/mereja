@@ -20,6 +20,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.MobileAds;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,6 +33,8 @@ import java.util.List;
 
 public class NewsFragment extends Fragment {
     TabHost tabHost;
+
+    private InterstitialAd mInterstitialAd;
 
 
     String url ="https://www.mereja360.com/api/getrecentnews.php";
@@ -67,8 +72,7 @@ public class NewsFragment extends Fragment {
                 adapter.notifyDataSetChanged();
             } catch (JSONException e) {
                 Log.e("Json Exception : ", e.getMessage());
-                e.printStackTrace();
-
+             return;
             }
             adapter.notifyDataSetChanged();
 
@@ -103,7 +107,7 @@ public class NewsFragment extends Fragment {
 
                     } catch (JSONException e) {
                         Log.e("Json Exception : ", e.getMessage());
-                        e.printStackTrace();
+                      return;
 
                     }
                 }
@@ -116,7 +120,7 @@ public class NewsFragment extends Fragment {
                 try {
                     getofflinenewsData();
                 } catch (JSONException e) {
-                    //e.printStackTrace();
+                 return;
                 }
                 Log.e("Volley Error : ", error.toString());
 
@@ -130,11 +134,18 @@ public class NewsFragment extends Fragment {
     }
 
     //----------------- Drama Recicle View
-    private void getoffliethionenewsData() throws JSONException {
-        FileManager fileManager = new FileManager();
-        String stringfile = fileManager.readFromFile("ethionews.dat", getContext());
-        JSONArray response = new JSONArray(stringfile);
+    private void getoffliethionenewsData(){
 
+        String stringfile ="";
+        JSONArray response =null;
+        try {
+            FileManager fileManager = new FileManager();
+             stringfile = fileManager.readFromFile("ethionews.dat", getContext());
+           response = new JSONArray(stringfile);
+        }catch (Exception ex){
+            Log.e("File Exception : ",ex.getMessage());
+            return;
+        }
         for (int i = 0; i < response.length(); i++) {
             try {
                 JSONObject jsonObject = response.getJSONObject(i);
@@ -150,7 +161,7 @@ public class NewsFragment extends Fragment {
                 ethioAdapter.notifyDataSetChanged();
             } catch (JSONException e) {
                 Log.e("Json Exception : ", e.getMessage());
-                e.printStackTrace();
+              return;
 
             }
             ethioAdapter.notifyDataSetChanged();
@@ -161,14 +172,19 @@ public class NewsFragment extends Fragment {
 
     }
     private void getethioNewsData() {
-        final ProgressDialog progressDialog = new ProgressDialog(getContext());
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(urlethiopia, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
-                Log.e("Response : ", String.valueOf(response));
-                FileManager fileManager = new FileManager();
-                fileManager.writeToFile("ethionews.dat", String.valueOf(response), getContext());
+
+                try {
+
+                    FileManager fileManager = new FileManager();
+                    fileManager.writeToFile("ethionews.dat", String.valueOf(response), getContext());
+
+                }catch (Exception ex){
+                    Log.e("File Exception : ",ex.getMessage());
+                }
                 for (int i = 0; i < response.length(); i++) {
                     try {
                         JSONObject jsonObject = response.getJSONObject(i);
@@ -187,7 +203,7 @@ public class NewsFragment extends Fragment {
 
                     } catch (JSONException e) {
                         Log.e("Json Exception : ", e.getMessage());
-                        e.printStackTrace();
+                      return;
 
                     }
                 }
@@ -197,14 +213,8 @@ public class NewsFragment extends Fragment {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                try {
-                    getoffliethionenewsData();
-                } catch (JSONException e) {
-                    //e.printStackTrace();
-                }
+                getoffliethionenewsData();
                 Log.e("Volley Error : ", error.toString());
-
-
 
             }
         });
@@ -216,11 +226,17 @@ public class NewsFragment extends Fragment {
 
 
     //----------------- Drama Recicle View
-    private void getoffliafronenewsData() throws JSONException {
-        FileManager fileManager = new FileManager();
-        String stringfile = fileManager.readFromFile("afronews.dat", getContext());
-        JSONArray response = new JSONArray(stringfile);
-
+    private void getoffliafronenewsData(){
+        String stringfile ="";
+        JSONArray response=null;
+        try {
+            FileManager fileManager = new FileManager();
+         stringfile = fileManager.readFromFile("afronews.dat", getContext());
+            response = new JSONArray(stringfile);
+        }catch (Exception ex){
+            Log.e("Exception : ",ex.getMessage());
+            return;
+        }
         for (int i = 0; i < response.length(); i++) {
             try {
                 JSONObject jsonObject = response.getJSONObject(i);
@@ -236,7 +252,7 @@ public class NewsFragment extends Fragment {
                 afroAdapter.notifyDataSetChanged();
             } catch (JSONException e) {
                 Log.e("Json Exception : ", e.getMessage());
-                e.printStackTrace();
+              return;
 
             }
             afroAdapter.notifyDataSetChanged();
@@ -247,14 +263,21 @@ public class NewsFragment extends Fragment {
 
     }
     private void getafroNewsData() {
-        final ProgressDialog progressDialog = new ProgressDialog(getContext());
 
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(urlafrica, new Response.Listener<JSONArray>() {
+         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(urlafrica, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
                 Log.e("Response : ", String.valueOf(response));
-                FileManager fileManager = new FileManager();
-                fileManager.writeToFile("afronews.dat", String.valueOf(response), getContext());
+                try {
+                    FileManager fileManager = new FileManager();
+                    fileManager.writeToFile("afronews.dat", String.valueOf(response), getContext());
+
+                }catch (Exception fx){
+                    Log.e("File Exception : ",fx.getMessage());
+
+                }
+
+
                 for (int i = 0; i < response.length(); i++) {
                     try {
                         JSONObject jsonObject = response.getJSONObject(i);
@@ -273,7 +296,7 @@ public class NewsFragment extends Fragment {
 
                     } catch (JSONException e) {
                         Log.e("Json Exception : ", e.getMessage());
-                        e.printStackTrace();
+                     return;
 
                     }
                 }
@@ -283,11 +306,7 @@ public class NewsFragment extends Fragment {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                try {
-                    getoffliafronenewsData();
-                } catch (JSONException e) {
-                    //e.printStackTrace();
-                }
+                getoffliafronenewsData();
                 Log.e("Volley Error : ", error.toString());
 
 
@@ -415,6 +434,16 @@ return;
         // Setup any handles to view objects here
         // EditText etFoo = (EditText) view.findViewById(R.id.etFoo);
 
+
+
+        MobileAds.initialize(getContext(),
+                "ca-app-pub-3940256099942544~3347511713");
+
+        mInterstitialAd = new InterstitialAd(getContext());
+        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+
 try {
 
     TabHost host = (TabHost) view.findViewById(R.id.tabHost);
@@ -444,12 +473,19 @@ try {
     spec.setContent(R.id.tab3);
     spec.setIndicator("World");
     host.addTab(spec);
+//----------------------------- add
+
+    if (mInterstitialAd.isLoaded()) {
+        mInterstitialAd.show();
+    } else {
+        Log.d("TAG", "The interstitial wasn't loaded yet.");
+    }
 
 
     //____________________________________________
 
 
-    recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+    recyclerView =  view.findViewById(R.id.recycler_view);
 
     newsList = new ArrayList<>();
     adapter = new NewsAdapter(getContext(), newsList);
@@ -464,13 +500,14 @@ try {
     } catch (JSONException e) {
 
         Log.e("JsonException : ", e.getMessage());
+        return;
     }
 
     getNewsData();
 //_______________________________________________________________
 
 
-    recyclerViewethio = (RecyclerView) view.findViewById(R.id.recycler_view2);
+    recyclerViewethio =  view.findViewById(R.id.recycler_view2);
 
     ethioList = new ArrayList<>();
     ethioAdapter = new NewsAdapter(getContext(), ethioList);
@@ -480,18 +517,14 @@ try {
     // recyclerView.addItemDecoration(new MainActivity.GridSpacingItemDecoration(2, dpToPx(10), true));
     recyclerViewethio.setItemAnimator(new DefaultItemAnimator());
     recyclerViewethio.setAdapter(ethioAdapter);
-    try {
-        getoffliethionenewsData();
-    } catch (JSONException e) {
+    getoffliethionenewsData();
 
-        Log.e("JsonException : ", e.getMessage());
-    }
 
     getethioNewsData();
 //_______________________________________________________________
 
 
-    recyclerViewafrica = (RecyclerView) view.findViewById(R.id.recycler_view3);
+    recyclerViewafrica =  view.findViewById(R.id.recycler_view3);
 
     afroList = new ArrayList<>();
     afroAdapter = new NewsAdapter(getContext(), afroList);
@@ -501,18 +534,13 @@ try {
     // recyclerView.addItemDecoration(new MainActivity.GridSpacingItemDecoration(2, dpToPx(10), true));
     recyclerViewafrica.setItemAnimator(new DefaultItemAnimator());
     recyclerViewafrica.setAdapter(afroAdapter);
-    try {
-        getoffliafronenewsData();
-    } catch (JSONException e) {
-
-        Log.e("JsonException : ", e.getMessage());
-    }
+    getoffliafronenewsData();
 
     getafroNewsData();
 //_______________________________________________________________
 
 
-    recyclerViewworld = (RecyclerView) view.findViewById(R.id.recycler_view4);
+    recyclerViewworld =  view.findViewById(R.id.recycler_view4);
 
     worldList = new ArrayList<>();
     worldAdapter = new NewsAdapter(getContext(), worldList);
@@ -529,7 +557,11 @@ try {
 
 
 }catch (Exception ex){
-
+    if (mInterstitialAd.isLoaded()) {
+        mInterstitialAd.show();
+    } else {
+        Log.d("TAG", "The interstitial wasn't loaded yet.");
+    }
     Log.e("exeption :",ex.getMessage());
 }
 

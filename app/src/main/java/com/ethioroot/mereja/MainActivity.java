@@ -15,6 +15,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+
 public class MainActivity extends AppCompatActivity {
     final FragmentManager fragmentManager = getSupportFragmentManager();
 
@@ -52,15 +57,32 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    private AdView mAdView,mAdView2,mAdview3;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.frameMain, homeFragment).commit();
+
+        MobileAds.initialize(this,
+                "ca-app-pub-3940256099942544~3347511713");
+
+        mAdView = findViewById(R.id.adView);
+        mAdView2=findViewById(R.id.adView2);
 
 
+
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+
+        AdRequest adRequest1=new AdRequest.Builder().build();
+        mAdView2.loadAd(adRequest1);
+
+        if (savedInstanceState == null) {
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.frameMain, homeFragment).commit();
+
+        }
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
        // navigation.setTitleState(navigation.TitleState.ALWAYS_SHOW);
         //navigation.setBehaviorTranslationEnabled(true);

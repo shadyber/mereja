@@ -61,8 +61,8 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.MyViewHolder> 
         // loading album cover using Glide library
 
         Picasso.with(mContext).load(news.getThumbnail()).fit().centerCrop()
-                .placeholder(R.drawable.news)
-                .error(R.drawable.news)
+                .placeholder(R.drawable.placeholder)
+                .error(R.drawable.placeholder)
                 .into(holder.thumbnail);
 
         /* Glide.with(mContext).load(album.getThumbnail()).into(holder.thumbnail);
