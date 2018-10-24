@@ -10,6 +10,8 @@ import android.widget.TextView;
 
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.youtube.player.YouTubeBaseActivity;
@@ -22,7 +24,7 @@ public class WatchActivity   extends YouTubeBaseActivity {
     private InterstitialAd mInterstitialAd;
 
     FloatingActionButton fab;
-
+    private AdView mAdView,mAdView2;
     private static final int RECOVERY_REQUEST = 1;
     private YouTubePlayerView youTubeView;
     private String videoId="";
@@ -37,14 +39,29 @@ public class WatchActivity   extends YouTubeBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_watch);
-
-
         MobileAds.initialize(this,
-                "ca-app-pub-3780418992794226~3021814007");
+                getResources().getString(R.string.admob_app_id));
+
+
 
         mInterstitialAd = new InterstitialAd(this);
-        mInterstitialAd.setAdUnitId("ca-app-pub-3780418992794226/3129625210");
+        mInterstitialAd.setAdUnitId(getResources().getString(R.string.interatial_1));
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
+
+
+
+
+
+
+
+        mAdView = findViewById(R.id.adviewsmart);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+
+        mAdView = new AdView(this);
+        mAdView.setAdSize(AdSize.SMART_BANNER);
+
+
 
         fab=findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {

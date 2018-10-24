@@ -116,11 +116,21 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsAdapter.MyViewHold
 
         @Override
         public boolean onMenuItemClick(MenuItem menuItem) {
+            final Album album = albumList.get(0);
             switch (menuItem.getItemId()) {
                 case R.id.action_add_favourite:
                     Toast.makeText(mContext, "Add to favourite", Toast.LENGTH_SHORT).show();
                     return true;
                 case R.id.action_play_next:
+                    Intent detail=new Intent(mContext,WatchActivity.class);
+                    detail.putExtra("title",album.getName());
+                    detail.putExtra("detail",album.getShortDescription());
+                    detail.putExtra("detail",album.getLongDescription());
+                    detail.putExtra("id",album.getMovieid());
+                    detail.putExtra("vidId",album.getVideo());
+                    detail.putExtra("thumb_small",album.getThumbnail());
+                    detail.putExtra("category",album.getgeners());
+                    mContext.startActivity(detail);
                     Toast.makeText(mContext, "Play Video", Toast.LENGTH_SHORT).show();
                     return true;
 
