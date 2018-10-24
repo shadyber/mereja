@@ -8,17 +8,16 @@
 
     <application
         android:allowBackup="true"
+        android:hardwareAccelerated="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
-        android:hardwareAccelerated="false"
-        android:supportsRtl="true"
         android:largeHeap="true"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-3780418992794226~3021814007"/>
-
+            android:value="ca-app-pub-3780418992794226~3021814007" />
 
         <activity
             android:name=".MainActivity"
@@ -30,7 +29,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".WatchActivity" />
-        <activity android:name=".ReadActivity"></activity>
+        <activity android:name=".ReadActivity" />
+        <activity android:name=".ProfileActivity" />
+        <activity android:name=".AdsActivity"></activity>
     </application>
 
 </manifest>

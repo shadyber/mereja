@@ -1,49 +1,35 @@
 package com.ethioroot.mereja;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.reward.RewardItem;
 import com.google.android.gms.ads.reward.RewardedVideoAd;
 import com.google.android.gms.ads.reward.RewardedVideoAdListener;
-import com.google.android.youtube.player.YouTubePlayerView;
-import com.squareup.picasso.Picasso;
 
 import static android.widget.Toast.LENGTH_LONG;
 
-public class ReadActivity extends AppCompatActivity  implements RewardedVideoAdListener {
+public class AdsActivity extends AppCompatActivity implements RewardedVideoAdListener {
     private RewardedVideoAd mRewardedVideoAd;
 
     private InterstitialAd mInterstitialAd;
+    private AdView mAdView,mAdView2;
 
     FloatingActionButton fab;
-
-    private  String image="";
-    private  String title="";
-    private  String shortDisc="";
-    private  String description="";
-    private String movieid="";
-    private String cast="";
-    private  String gener="";
-
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.actionbar_menu, menu);
@@ -66,7 +52,7 @@ public class ReadActivity extends AppCompatActivity  implements RewardedVideoAdL
 
                 return true;
             case R.id.action_profile:
-                Intent profile =new Intent(ReadActivity.this,ProfileActivity.class);
+                Intent profile =new Intent(AdsActivity.this,ProfileActivity.class);
                 startActivity(profile);
                 return true;
             default:
@@ -84,50 +70,59 @@ public class ReadActivity extends AppCompatActivity  implements RewardedVideoAdL
 
 
 
-    private AdView mAdView,mAdView2;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_read);
+        setContentView(R.layout.activity_ads);
 
 
         MobileAds.initialize(this,
                 getResources().getString(R.string.admob_app_id));
 
 
-
-        mAdView = findViewById(R.id.adView);
-        mAdView2=findViewById(R.id.adView2);
-
-
-
+        mAdView = findViewById(R.id.adviewsmart);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
 
-        AdRequest adRequest1=new AdRequest.Builder().build();
-        mAdView2.loadAd(adRequest1);
+        mAdView = new AdView(this);
+        mAdView.setAdSize(AdSize.SMART_BANNER);
+
+
+
+        mAdView2 = findViewById(R.id.adviewsmart2);
+        AdRequest adRequest2 = new AdRequest.Builder().build();
+        mAdView2.loadAd(adRequest2);
+
+        mAdView2 = new AdView(this);
+        mAdView2.setAdSize(AdSize.SMART_BANNER);
+
+
+
+
 
 
         mInterstitialAd = new InterstitialAd(this);
         mInterstitialAd.setAdUnitId(getResources().getString(R.string.interatial_1));
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
 
-fab=findViewById(R.id.fab);
-fab.setOnClickListener(new View.OnClickListener() {
-    @Override
-    public void onClick(View v) {
-        if (mInterstitialAd.isLoaded()) {
-            mInterstitialAd.show();
-        } else {
-            Log.d("TAG", "The interstitial wasn't loaded yet.");
-        }
-    }
-});
+        fab=findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mInterstitialAd.isLoaded()) {
+                    mInterstitialAd.show();
+                } else {
+                    Log.d("TAG", "The interstitial wasn't loaded yet.");
+                }
+            }
+        });
         mInterstitialAd.setAdListener(new AdListener() {
             @Override
             public void onAdLoaded() {
                 // Code to be executed when an ad finishes loading.
+                mInterstitialAd.show();
             }
 
             @Override
@@ -151,6 +146,20 @@ fab.setOnClickListener(new View.OnClickListener() {
             }
         });
 
+
+         final Handler handler=new Handler();
+         Runnable runnable=new Runnable() {
+            @Override
+            public void run() {
+                if (mInterstitialAd.isLoaded()) {
+                    mInterstitialAd.show();
+                } else {
+                    Log.d("TAG", "The interstitial wasn't loaded yet.");
+                }
+                handler.postDelayed(this,5000);
+            }
+        };
+        handler.postDelayed(runnable,5000);
 //_______________________rewarding
 
 
@@ -164,47 +173,7 @@ fab.setOnClickListener(new View.OnClickListener() {
 
 
 
-        try {
-            image=getIntent().getStringExtra("thumb_small");
-            title=getIntent().getStringExtra("title");
-            description=getIntent().getStringExtra("detail");
-
-            gener=getIntent().getStringExtra("category");
-        }catch(Exception ex){
-            Log.e("Error on Intent : ",ex.getMessage());
-
-        }
-
-
-
-        final Handler handler=new Handler();
-        Runnable runnable=new Runnable() {
-            @Override
-            public void run() {
-                if (mInterstitialAd.isLoaded()) {
-                    mInterstitialAd.show();
-                } else {
-                    Log.d("TAG", "The interstitial wasn't loaded yet.");
-                }
-                handler.postDelayed(this,15000);
-            }
-        };
-        handler.postDelayed(runnable,15000);
-
-        TextView txttitle=findViewById(R.id.txttitle);
-        txttitle.setText(title);
-
-        TextView txtdetail=findViewById(R.id.txtdetail);
-
-             txtdetail.setText(Html.fromHtml(description));
-
-        ImageView imagepostertop=findViewById(R.id.imgposter);
-        Picasso.with(getApplicationContext()).load(image).placeholder(R.drawable.placeholder)// Place holder image from drawable folder
-                .error(R.drawable.placeholder).fit().centerCrop()
-                .into(imagepostertop);
-
     }
-
     @Override
     public void onRewarded(RewardItem reward) {
         Toast.makeText(this, "onRewarded! currency: " + reward.getType() + "  amount: " +
@@ -238,6 +207,7 @@ fab.setOnClickListener(new View.OnClickListener() {
     @Override
     public void onRewardedVideoAdLoaded() {
         Toast.makeText(this,"Video Ready Tab on the Diamond icon on top",LENGTH_LONG).show();
+        showReardVideo();
     }
 
     @Override

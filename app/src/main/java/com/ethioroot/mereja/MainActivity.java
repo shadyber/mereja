@@ -1,5 +1,6 @@
 package com.ethioroot.mereja;
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -66,6 +67,10 @@ public class MainActivity extends AppCompatActivity implements RewardedVideoAdLi
             case  R.id.action_share:
 
                     return true;
+            case R.id.action_profile:
+                Intent profile =new Intent(MainActivity.this,ProfileActivity.class);
+                startActivity(profile);
+                return true;
             default:
                 showReardVideo();
                 return super.onOptionsItemSelected(item);
@@ -173,16 +178,21 @@ public class MainActivity extends AppCompatActivity implements RewardedVideoAdLi
             @Override
             public void onAdOpened() {
                 // Code to be executed when the ad is displayed.
+                RewardManager.AddPoint("point",1,getApplicationContext());
+
             }
 
             @Override
             public void onAdLeftApplication() {
                 // Code to be executed when the user has left the app.
+                RewardManager.AddPoint("point",1,getApplicationContext());
+
             }
 
             @Override
             public void onAdClosed() {
                 // Code to be executed when when the interstitial ad is closed.
+
             }
         });
 
@@ -219,16 +229,24 @@ public class MainActivity extends AppCompatActivity implements RewardedVideoAdLi
         Toast.makeText(this, "onRewarded! currency: " + reward.getType() + "  amount: " +
                 reward.getAmount(), Toast.LENGTH_SHORT).show();
         // Reward the user.
+        RewardManager.AddPoint("point",reward.getAmount(),getApplicationContext());
+        Toast.makeText(getApplicationContext(),"Your Get "+reward.getAmount()+" "+reward.getType()+" ",Toast.LENGTH_SHORT).show();
+
     }
 
     @Override
     public void onRewardedVideoAdLeftApplication() {
-        Toast.makeText(this, "Come Back ",
+        Toast.makeText(this, "Come Back Soon You Get Extra 1 Coint",
                 Toast.LENGTH_SHORT).show();
+        RewardManager.AddPoint("point",1,getApplicationContext());
+
     }
 
     @Override
     public void onRewardedVideoAdClosed() {
+
+        RewardManager.AddPoint("point",-1,getApplicationContext());
+
         loadRewardedVideoAd();
     }
 
@@ -244,11 +262,14 @@ Toast.makeText(this,"Video Ready Tab on the Diamond icon on top",LENGTH_LONG).sh
 
     @Override
     public void onRewardedVideoAdOpened() {
+        RewardManager.AddPoint("point",1,getApplicationContext());
+
         Toast.makeText(this, "We Gonna Reward you when you Finish this Video", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onRewardedVideoStarted() {
+        RewardManager.AddPoint("point",1,getApplicationContext());
 
     }
 

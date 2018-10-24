@@ -1,6 +1,8 @@
 package com.ethioroot.mereja;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
@@ -119,7 +121,33 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsAdapter.MyViewHold
                     Toast.makeText(mContext, "Add to favourite", Toast.LENGTH_SHORT).show();
                     return true;
                 case R.id.action_play_next:
-                    Toast.makeText(mContext, "Play next", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, "Play Video", Toast.LENGTH_SHORT).show();
+                    return true;
+
+                case R.id.action_download:
+                  AlertDialog.Builder builder1=new AlertDialog.Builder(mContext);
+                  builder1.setCancelable(true);
+                  builder1.setPositiveButton("Get Points", new DialogInterface.OnClickListener() {
+                      @Override
+                      public void onClick(DialogInterface dialog, int which) {
+                          dialog.cancel();
+                          Intent adsactivity=new Intent(mContext,AdsActivity.class);
+                          mContext.startActivity(adsactivity);
+                      }
+                  });
+                  builder1.setNegativeButton("My Points", new DialogInterface.OnClickListener() {
+                      @Override
+                      public void onClick(DialogInterface dialog, int which) {
+                          //
+                          Intent profile=new Intent(mContext,ProfileActivity.class);
+                          mContext.startActivity(profile);
+                          dialog.cancel();
+                      }
+                  });
+                  AlertDialog alertDialog=builder1.create();
+                  alertDialog.setTitle("Get 5,000 Point to Download Video. You can Watch Ads to Collect your Points");
+
+                  alertDialog.show();
                     return true;
                 default:
             }
