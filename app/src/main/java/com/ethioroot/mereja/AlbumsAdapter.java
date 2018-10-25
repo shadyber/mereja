@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -159,9 +160,25 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsAdapter.MyViewHold
 
                   alertDialog.show();
                     return true;
+                case R.id.action_sharevid:
+                    try {
+                        String shareBody = "Watch or Download this Video on mereja360: https://play.google.com/store/apps/details?id=com.ethioroot.mereja ";
+                        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                        sharingIntent.setType("text/plain");
+                        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Watch and Download \n "+ album.getName());
+                        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+                        mContext.startActivity(Intent.createChooser(sharingIntent, "Share  \n " + album.getName()+"This Massage Using "));
+                        RewardManager.AddPoint("point", 5, mContext);
+
+                    }catch (Exception e){
+                        Log.e("Exception on sharing :",e.getMessage());
+
+                    }
+                    return true;
                 default:
+                    return true;
             }
-            return false;
+
         }
     }
 

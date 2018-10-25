@@ -1,8 +1,12 @@
 package com.ethioroot.mereja;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Rect;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -32,6 +36,8 @@ import com.google.android.gms.ads.reward.RewardItem;
 import com.google.android.gms.ads.reward.RewardedVideoAd;
 import com.google.android.gms.ads.reward.RewardedVideoAdListener;
 
+import java.io.IOException;
+
 import static android.widget.Toast.LENGTH_LONG;
 
 public class MainActivity extends AppCompatActivity implements RewardedVideoAdListener {
@@ -44,6 +50,29 @@ public class MainActivity extends AppCompatActivity implements RewardedVideoAdLi
     final Fragment newsFragment = new NewsFragment();
     final Fragment blogFragment = new BlogFragment();
  final Fragment homeFragment = new HomeFragment();
+
+
+
+
+
+    public static void sendAppItself(Activity paramActivity) throws IOException {
+        PackageManager pm = paramActivity.getPackageManager();
+        ApplicationInfo appInfo;
+        try {
+            appInfo = pm.getApplicationInfo(paramActivity.getPackageName(),
+                    PackageManager.GET_META_DATA);
+            Intent sendBt = new Intent(Intent.ACTION_SEND);
+            sendBt.setType("*/*");
+            sendBt.putExtra(Intent.EXTRA_STREAM,
+                    Uri.parse("file://" + appInfo.publicSourceDir));
+
+            paramActivity.startActivity(Intent.createChooser(sendBt,
+                    "Share mereja using"));
+        } catch (PackageManager.NameNotFoundException e1) {
+            Log.e("PAckage Not FOund: ",e1.getMessage());
+        }
+    }
+
 
 
     @Override
@@ -60,13 +89,36 @@ public class MainActivity extends AppCompatActivity implements RewardedVideoAdLi
         switch (item.getItemId()) {
             case R.id.action_like:
 
+                String shareBody = "Downlolad Mereja App From Google Play  : https://play.google.com/store/apps/details?id=com.ethioroot.mereja";
+                Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                sharingIntent.setType("text/plain");
+                sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Watch and Download Selected Videos from Mereja ");
+                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+                startActivity(Intent.createChooser(sharingIntent, "Share This Massage Using "));
+                RewardManager.AddPoint("point",5,getApplicationContext());
+
                 return true;
             case R.id.action_reward:
               showReardVideo();
                 return true;
             case  R.id.action_share:
+                try {
+                    sendAppItself(MainActivity.this);
+                } catch (IOException e) {
 
-                    return true;
+                   shareBody = "Downlolad Mereja App From Google Play  : https://play.google.com/store/apps/details?id=com.ethioroot.mereja";
+                   sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                    sharingIntent.setType("text/plain");
+                    sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Watch and Download Selected Videos from Mereja ");
+                    sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+                    startActivity(Intent.createChooser(sharingIntent, "Share This Massage Using "));
+
+                    RewardManager.AddPoint("point",1,getApplicationContext());
+
+
+                    Log.e("Error : ",e.getMessage());
+                }
+                return true;
             case R.id.action_profile:
                 Intent profile =new Intent(MainActivity.this,ProfileActivity.class);
                 startActivity(profile);

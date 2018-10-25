@@ -14,4 +14,10 @@
         android:id="@+id/action_download"
         android:orderInCategory="102"
         android:title="@string/action_download" />
+
+    <item
+        android:id="@+id/action_sharevid"
+        android:orderInCategory="103"
+        android:title="@string/action_share" />
+
 </menu>
